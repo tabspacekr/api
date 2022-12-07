@@ -77,16 +77,19 @@ paths:
 
         참조 데이터 목록
         | 순번 | 기기이름 | 디바이스ID |
-        |:---:|:--------------:|:-------------------------:|
-        |  1  |외부 온도       |sensor.outside_temperature|
-        |  2  |축사1온도       |sensor.ch1_temperature|
-        |  3  |축사2온도       |sensor.ch2_temperature|
-        |  4  |축사3온도       |sensor.ch3_temperature|
-        |  5  |축사4온도       |sensor.ch4_temperature|
-        |  6  |축사1온도조절기 |climate.ch1_thermostat|
-        |  7  |축사2온도조절기 |climate.ch2_thermostat|
-        |  8  |축사3온도조절기 |climate.ch3_thermostat|
-        |  9  |축사4온도조절기 |climate.ch4_thermostat|
+        |:----:|:----------------:|:-------------------------:|
+        |   1  |외부 온도         |sensor.outside_temperature|
+        |   2  |축사1온도         |sensor.ch1_temperature|
+        |   3  |축사2온도         |sensor.ch2_temperature|
+        |   4  |축사3온도         |sensor.ch3_temperature|
+        |   5  |축사4온도         |sensor.ch4_temperature|
+        |   6  |축사1+2 최소온도  |sensor.ch12_temperature|
+        |   7  |축사3+4 최소온도  |sensor.ch34_temperature|
+        |   8  |축사전체 최소온도 |sensor.ch1234_temperature|
+        |   9  |축사1온도조절기   |climate.ch1_thermostat|
+        |  10  |축사2온도조절기   |climate.ch2_thermostat|
+        |  11  |축사3온도조절기   |climate.ch3_thermostat|
+        |  12  |축사4온도조절기   |climate.ch4_thermostat|
         <pre>※ 온도조절기의 모드는 heat, off 2가지로 반환됨</pre>
         
       tags:
@@ -155,6 +158,9 @@ paths:
         |  2  |축사2온도조절기 |climate.ch2_thermostat|
         |  3  |축사3온도조절기 |climate.ch3_thermostat|
         |  4  |축사4온도조절기 |climate.ch4_thermostat|
+        |  5  |축사1+2 최소온도  |sensor.ch12_temperature|
+        |  6  |축사3+4 최소온도  |sensor.ch34_temperature|
+        |  7  |축사전체 최소온도 |sensor.ch1234_temperature|
 
       tags:
         - 기기 컨트롤
