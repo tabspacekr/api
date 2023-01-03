@@ -88,8 +88,6 @@ paths:
         |   8  |축사전체 최소온도 |sensor.ch1234_min_temperature|
         |   9  |축사1온도조절기   |climate.ch1_thermostat|
         |  10  |축사2온도조절기   |climate.ch2_thermostat|
-        |  11  |축사3온도조절기   |climate.ch3_thermostat|
-        |  12  |축사4온도조절기   |climate.ch4_thermostat|
         <pre>※ 온도조절기의 모드는 heat, off 2가지로 반환됨</pre>
         
       tags:
@@ -156,11 +154,6 @@ paths:
         |:---:|:--------------:|:-----------------------------:|
         |  1  |축사1온도조절기 |climate.ch1_thermostat|
         |  2  |축사2온도조절기 |climate.ch2_thermostat|
-        |  3  |축사3온도조절기 |climate.ch3_thermostat|
-        |  4  |축사4온도조절기 |climate.ch4_thermostat|
-        |  5  |축사1+2 최소온도  |sensor.ch12_min_temperature|
-        |  6  |축사3+4 최소온도  |sensor.ch34_min_temperature|
-        |  7  |축사전체 최소온도 |sensor.ch1234_min_temperature|
 
       tags:
         - 기기 컨트롤
