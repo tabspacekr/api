@@ -1,0 +1,318 @@
+openapi: 3.0.2
+# swagger: "2.0"
+info:
+  title: "엔조이소프트 REST API"
+  description: |
+    사전 제공된 **REST Api Token**정보가 필요합니다.
+
+    해당 Token정보를 복사한 후, 화면 가운데 우측에 위치한 **초록색 Authorize 버튼**을 클릭 -> **Value**에 붙여넣기 -> **Authorize** -> (인증완료 후) **Close** 후 사용바랍니다.
+
+    인증 후에는 사용가능한 API목록을 클릭 후, 설명을 참조하여 **Try it out** -> **Execute** 하시면 됩니다.
+
+# the domain of the service
+servers:
+  - url: https://iot.tabspace.kr/api
+    description: TS Production Server
+  - url: https://enjoysoft.tabspace.kr/api
+    description: ES Production Server
+
+# array of all schemes that your API supports
+schemes:
+  - https
+
+# 1) Define the security scheme type (HTTP bearer)
+components:
+  securitySchemes:
+    Bearer:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      # bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+# 2) Apply the security globally to all operations
+security:
+  - Bearer: []         # use the same name as above
+
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /:
+    get:
+      summary: API 상태 조회
+      description: API 상태에 대한 결과를 반환한다.
+      tags:
+        - 기본
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: API 정상 동작 중
+          schema:
+            $ref: '#/definitions/Message'
+        default:
+          description: 에러
+          schema:
+            $ref: '#/definitions/Message'
+  /config:
+    get:
+      summary: API 환경 설정 정보
+      description: JSON 포맷으로 API 환경 설정 정보를 반환한다.
+      tags:
+        - 기본
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: 현재 API 환경 설정 정보
+          schema:
+            $ref: '#/definitions/ApiConfig'
+        default:
+          description: 에러
+          schema:
+            $ref: '#/definitions/Message'
+ 
+  /states/{entity_id}:
+    get:
+      summary: 기기 상태값 조회
+      description: |
+        기기 상태값을 조회
+
+        참조 데이터 목록
+        | 순번 | 기기이름 | 디바이스ID |
+        |:----:|:----------------:|:----------------------------:|
+        |   1  |스위치1         |switch.test1|
+        |   2  |스위치2         |switch.test2|
+        <pre>※ inching기능은 tasmota에서도 적용이 가능 </pre>
+        
+      tags:
+        - 기기 상태 조회
+      security:
+        - Bearer: []
+      parameters:
+      - name: entity_id
+        in: path
+        description: 기기의 고유한 ID값을 입력 (상단 설명의 switch.xxx정보 기입)
+        required: true
+        type: string
+      responses:
+        200:
+          description: 상태
+          schema:
+            $ref: '#/definitions/State'
+        404:
+          description: 해당 기기가 없음
+          schema:
+            $ref: '#/definitions/Message'
+        default:
+          description: 에러
+          schema:
+            $ref: '#/definitions/Message'
+   
+  /error_log:
+    get:
+      summary: 에러 로그
+      description: |
+        시스템의 모든 에러 로그를 텍스트 형태로 반환한다.
+      tags:
+        - 기본
+      security:
+        - Bearer: []
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: 텍스트 형태의 에러 로그
+        default:
+          description: 에러
+          schema:
+            $ref: '#/definitions/Message'
+  
+  /services/{domain}/{service}:
+    post:
+      summary: 기기 컨트롤
+      description: |
+        기기 컨트롤은 서비스 호출을 통하여 가능합니다.
+
+        사용법은 다음과 같습니다.
+
+        **domain** : 스위치를 제어할 것이므로 **switch** 기입
+
+        **service** : 기기를 켜는 경우 **turn_on** 기기를 끄는 경우 **turn_off**
+
+        **Request body** : 대상 기기명을 아래 형식에 맞게 입력
+        
+        <pre>{ "entity_id": "switch.test1" }</pre>
+
+        참조 데이터 목록
+        | 순번 | 기기이름 | 디바이스ID |
+        |:---:|:--------------:|:-----------------------------:|
+        |  1  |스위치1 |switch.test1|
+        |  2  |스위치2 |switch.test2|
+
+      tags:
+        - 기기 컨트롤
+      security:
+        - Bearer: []
+      consumes:
+        - application/json
+      parameters:
+        - name: domain
+          in: path
+          description: 도메인명 기입
+          required: true
+          type: string
+        - name: service
+          in: path
+          description: 호출할 서비스명 기입
+          required: true
+          type: string
+        # - $ref: '#/parameters/ServiceData'
+
+      requestBody:
+        description: 기기명 기입
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                "$ref": "#/parameters/ServiceData"
+
+      responses:
+        200:
+          description: |
+            서비스가 실행되는 동안 변경된 상태 목록. 
+            
+            결과에는 서비스가 실행되는 동안 변경된 모든 변경된 상태가 포함되며, 
+            
+            해당 변경이 시스템에서 발생하는 다른 작업의 결과인 경우에도 마찬가지로 포함됨.
+
+            즉, API호출 이후에 변경된 값이 없었다면 200으로 리턴되긴 하나 결과값은 아무것도 없는 []로 표시됨.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/State'
+        default:
+          description: 에러
+          schema:
+            $ref: '#/definitions/Message'
+  
+definitions:
+  ApiConfig:
+    type: object
+    properties:
+      components:
+        type: array
+        description: List of component types
+        items:
+          type: string
+          description: Component type
+      latitude:
+        type: number
+        format: float
+        description: Latitude of Home Assistant server
+      longitude:
+        type: number
+        format: float
+        description: Longitude of Home Assistant server
+      location_name:
+        type: string
+      unit_system:
+        type: object
+        properties:
+          length:
+            type: string
+          mass:
+            type: string
+          temperature: 
+            type: string
+          volume:
+            type: string
+      time_zone:
+        type: string
+      version:
+        type: string
+  
+  Event:
+    type: object
+    properties:
+      event:
+        type: string
+      listener_count:
+        type: integer
+  Service:
+    type: object
+    properties:
+      domain:
+        type: string
+      services:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/DomainService'
+  DomainService:
+    type: object
+    properties:
+      description:
+        type: string
+      fields:
+        type: object
+        description: Object with service fields that can be called
+  State:
+    type: object
+    properties:
+      attributes:
+        $ref: '#/definitions/StateAttributes'
+      state:
+        type: string
+      entity_id:
+        type: string
+      last_changed:
+        type: string
+        format: date-time
+  StateAttributes:
+    type: object
+    additionalProperties:
+      type: string
+  History:
+    allOf:
+    - $ref: '#/definitions/State'
+    - type: object
+      properties:
+        last_updated:
+            type: string
+            format: date-time
+  Message:
+    type: object
+    properties:
+      message:
+        type: string
+parameters:
+  State:
+    name: body
+    in: body
+    description: State parameter
+    required: false
+    schema:
+      type: object
+      required:
+      - state
+      properties:
+        attributes:
+          $ref: '#/definitions/StateAttributes'
+        state:
+          type: string
+
+  ServiceData:
+    name: body
+    in: body
+    description: 템플릿 양식에 따라 기기명 기입
+    required: true
+    schema:
+      type: object
+      required:
+      - entity_id
+      properties:
+        entity_id:
+          description: 기기명 기입
+          type: object
+          example: '{"entity_id": "switch.test1"}'
+  
