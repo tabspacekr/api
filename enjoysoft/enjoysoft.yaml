@@ -80,8 +80,8 @@ paths:
         참조 데이터 목록
         | 순번 | 기기이름 | 디바이스ID |
         |:----:|:----------------:|:----------------------------:|
-        |   1  |스위치1         |switch.test1|
-        |   2  |스위치2         |switch.test2|
+        |   1  |플러그형         |switch.plug_test|
+        |   2  |릴레이형         |switch.relay_test|
         <pre>※ inching기능은 tasmota에서도 적용이 가능 </pre>
         
       tags:
@@ -146,8 +146,8 @@ paths:
         참조 데이터 목록
         | 순번 | 기기이름 | 디바이스ID |
         |:---:|:--------------:|:-----------------------------:|
-        |  1  |스위치1 |switch.test1|
-        |  2  |스위치2 |switch.test2|
+        |   1 |플러그형         |switch.plug_test|
+        |   2 |릴레이형         |switch.relay_test|
 
       tags:
         - 기기 컨트롤
