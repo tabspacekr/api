@@ -11,8 +11,6 @@ info:
 
 # the domain of the service
 servers:
-  - url: https://iot.tabspace.kr/api
-    description: TS Production Server
   - url: https://enjoysoft.tabspace.kr/api
     description: ES Production Server
 
@@ -82,7 +80,7 @@ paths:
         |:----:|:----------------:|:----------------------------:|
         |   1  |플러그형         |switch.plug_test|
         |   2  |릴레이형         |switch.relay_test|
-        <pre>※ inching기능은 tasmota에서도 적용이 가능 </pre>
+        <pre>※ entity name은 향후 MAC Address 12자리 고유값으로  </pre>
         
       tags:
         - 기기 상태 조회
