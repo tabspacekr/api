@@ -11,8 +11,10 @@ info:
 
 # the domain of the service
 servers:
-  - url: https://enjoysoft.tabspace.kr/api
+  - url: https://es.tabspace.kr/api
     description: ES Production Server
+  - url: https://enjoysoft.tabspace.kr/api
+    description: ES Test Server
 
 # array of all schemes that your API supports
 schemes:
