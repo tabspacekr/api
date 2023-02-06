@@ -78,7 +78,7 @@ paths:
         참조 데이터 목록
         | 순번 | 기기이름 | 디바이스ID |
         |:----:|:----------------:|:----------------------------:|
-        |   1  |팬1               |switch.fan01                  |
+        |   1  |팬1               |switch.fan10                  |
         |   2  |팬2               |switch.fan02                  |
         |   3  |팬3               |switch.fan03                  |
         |   4  |팬4               |switch.fan04                  |
@@ -87,17 +87,15 @@ paths:
         |   7  |팬7               |switch.fan07                  |
         |   8  |팬8               |switch.fan08                  |
         |   9  |팬9               |switch.fan09                  |
-        |   10 |팬10              |switch.fan10                  |
-        |   11 |팬1_연결상태      |binary_sensor.fan01           |
-        |   12 |팬2_연결상태      |binary_sensor.fan02           |
-        |   13 |팬3_연결상태      |binary_sensor.fan03           |
-        |   14 |팬4_연결상태      |binary_sensor.fan04           |
-        |   15 |팬5_연결상태      |binary_sensor.fan05           |
-        |   16 |팬6_연결상태      |binary_sensor.fan06           |
-        |   17 |팬7_연결상태      |binary_sensor.fan07           |
-        |   18 |팬8_연결상태      |binary_sensor.fan08           |
-        |   19 |팬9_연결상태      |binary_sensor.fan09           |
-        |   20 |팬10_연결상태     |binary_sensor.fan10           |
+        |   10 |팬1_연결상태      |binary_sensor.fan10           |
+        |   11 |팬2_연결상태      |binary_sensor.fan02           |
+        |   12 |팬3_연결상태      |binary_sensor.fan03           |
+        |   13 |팬4_연결상태      |binary_sensor.fan04           |
+        |   14 |팬5_연결상태      |binary_sensor.fan05           |
+        |   15 |팬6_연결상태      |binary_sensor.fan06           |
+        |   16 |팬7_연결상태      |binary_sensor.fan07           |
+        |   17 |팬8_연결상태      |binary_sensor.fan08           |
+        |   18 |팬9_연결상태      |binary_sensor.fan09           |
         
         <pre>※ switch상태값 on, off, unavailable, unknown</pre>
         
@@ -163,7 +161,7 @@ paths:
         참조 데이터 목록
         | 순번 | 기기이름 | 디바이스ID |
         |:----:|:----------------:|:----------------------------:|
-        |   1  |팬1               |switch.fan01                  |
+        |   1  |팬1               |switch.fan10                  |
         |   2  |팬2               |switch.fan02                  |
         |   3  |팬3               |switch.fan03                  |
         |   4  |팬4               |switch.fan04                  |
@@ -172,7 +170,6 @@ paths:
         |   7  |팬7               |switch.fan07                  |
         |   8  |팬8               |switch.fan08                  |
         |   9  |팬9               |switch.fan09                  |
-        |   10 |팬10              |switch.fan10                  |
 
       tags:
         - 기기 컨트롤
