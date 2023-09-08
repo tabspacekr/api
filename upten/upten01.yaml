@@ -79,10 +79,10 @@ paths:
         | 순번 | 기기이름 | 디바이스ID |
         |:----:|:----------------:|:----------------------------:|
         |   1  |외부 온도         |sensor.outside_temperature|
-        |   2  |축사1온도         |sensor.ch1_new_temperature|
-        |   3  |축사1-1온도         |sensor.ch1_1_new_temperature|
-        |   4  |축사2온도         |sensor.ch2_new_temperature|
-        |   5  |축사2-1온도         |sensor.ch2_1_new_temperature|
+        |   2  |축사1온도(입구쪽)         |sensor.ch1_new_temperature|
+        |   3  |축사1-1온도(안쪽)         |sensor.ch1_1_new_temperature|
+        |   4  |축사2온도(입구쪽)         |sensor.ch2_new_temperature|
+        |   5  |축사2-1온도(안쪽)         |sensor.ch2_1_new_temperature|
         |   6  |축사1 최소온도  |sensor.ch12_min_temperature|
         |   7  |축사3 최소온도  |sensor.ch34_min_temperature|
         |   8  |축사전체 최소온도 |sensor.ch1234_min_temperature|
