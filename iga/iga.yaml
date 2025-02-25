@@ -1,0 +1,1579 @@
+openapi: 3.0.0
+info:
+  title: 공유대구 IoT API
+  description: >-
+    # 개요
+
+
+    본 문서는 **주식회사 탭스페이스**의 IoT 플랫폼을 **RestAPI**로 제어하기 위한 가이드 문서임.
+
+
+    [https://iot.tabspace.kr](https://iot.tabspace.kr) 를 제어하기 위해 사용되며, 인증은
+    **Bearer token**을 사용함.
+
+
+    ```
+
+    Bearer tokens enable requests to authenticate using an access key, such as a
+    JSON
+
+    Web Token (JWT). The token is a text string, included in the request header.
+    In 
+
+    the request Authorization tab, select Bearer Token from the Auth Type
+    dropdown 
+
+    list. In the Token field, enter your API key value. For added security,
+    store it 
+
+    in a variable and reference the variable by name.
+
+    Postman appends the token value to the text Bearer in the required format to
+    the 
+
+    request Authorization header as follows:
+
+    Bearer <Your API key>
+
+     ```
+
+    당사 플랫폼의 RestAPI 인증방식은 사전 제공된 Long-lived access token으로 처리되며, 아래와 같이 문자열로
+    구성됨. **아래 token은 샘플이며, 이메일로 전달된 토큰으로 대체하여 사용**.
+
+
+    ```
+
+    REPLACE_THIS_TOKEN
+
+     ```
+
+    Long-lived access token의 유효기한은 10년이며, 기간초과 또는 api키 유출 등의 보안사고 발생 시 반드시 당사로
+    연락하여 해당 토큰의 폐기 및 재발행을 요청바람.
+
+
+    # API 구조
+
+
+    [https://iot.tabspace.kr/api/](https://iot.tabspace.kr/api/) 의 prefix로 각각의
+    ENDPOINT로 처리되며, API서버는 JSON encoded objects 형식으로 call을 허용 및 리턴함.
+
+
+    아래는 API 서버 상태조회의 curl예시이며(eyJ... 로 시작되는 token값은 사전 이메일로 제공된 값으로 변경하여 사용),
+    헤더값으로 Bearer token 인증정보, 콘텐츠타입 json을 선언하여 호출해야함.
+
+
+    ``` python
+
+    curl \
+      -H "Authorization: Bearer REPLACE_THIS_TOKEN" \
+      -H "Content-Type: application/json" \
+      https://iot.tabspace.kr/api/
+
+     ```
+
+    API call 의 성공 시 status code 200 또는 201을 반환.
+
+
+    API call 의 실패 시 status code 400 (Bad Request), 401 (Unauthorized), 404 (Not
+    Found), 405 (Method Not Allowed)를 각각 반환함.
+
+
+    # 주요 API 액션
+
+
+    GET : API 서버 상태조회, 각 기기(entity_id)의 상태 조회를 위해 처리
+
+
+    POST : 각 기기(entity_id)의 동작 제어를 위해 처리
+
+
+    # Postman에서 API를 테스트하는 방법
+
+
+    사전 전달된 Bearer token을 아래 이미지를 참고하여 longlivedtoken의 Current value에 대체하여 사용.
+
+
+    <img
+    src="https://content.pstmn.io/d084cd17-472f-4aae-af4a-d17387235b84/aW1hZ2UucG5n"
+    width="2334" height="702">
+
+
+    Postman Cloud Agent로도 RestAPI 통신은 문제없이 동작하나, 아래와 같이 에러가 발생하는 경우 Desktop
+    Agent를 설치하여 호출하면 해결됨.
+
+
+    <img
+    src="https://content.pstmn.io/3b999e09-3c1b-498a-b388-45354f68ef37/aW1hZ2UucG5n"
+    width="1970" height="518">
+
+
+    <img
+    src="https://content.pstmn.io/b02d4654-050b-446f-aca7-7aef334b7834/aW1hZ2UucG5n"
+    width="1112" height="1016">
+
+
+    폴더 확장 후 각 콜렉션 (초록색 GET, 갈색 POST로 표시됨)을 클릭한 후 SEND를 눌러서 Postman에서 API테스트 가능
+
+
+    <img
+    src="https://content.pstmn.io/44034117-4c42-47e5-983c-b402af33d2ba/aW1hZ2UucG5n"
+    width="307" height="607">
+
+
+    # 세부 API사용 방식 확인
+
+
+    각 폴더의 Overview 탭에서 확인 가능함.
+
+
+    <img
+    src="https://content.pstmn.io/496112b0-e25a-4276-af75-e92b5386ff06/aW1hZ2UucG5n"
+    width="1516" height="756">
+
+
+    # IoT 웹페이지(대시보드)에서 동작여부 확인
+
+
+    [https://iot.tabspace.kr/lovelace/daegu-api](https://iot.tabspace.kr/lovelace/daegu-api)
+    에 이메일로 전달된 id/pw로 로그인하여 RestAPI로 호출한 제어정보가 정상적으로 반영되는지 확인 가능함.
+
+
+    <img
+    src="https://content.pstmn.io/5b76bde5-ea00-492e-9a4f-56f1c5cc7ba6/aW1hZ2UucG5n"
+    width="1037" height="382">
+
+
+    # API Call 예제파일
+
+
+    우측 사이드바 아이콘을 클릭하여 Code snippet에서 샘플 개발언어 선택 후 Copy snippet버튼을 클릭하면 활용가능함.
+
+
+    <img
+    src="https://content.pstmn.io/b25b8f9f-4dd4-4688-8c60-8c081dca5ffc/aW1hZ2UucG5n"
+    width="1390" height="560">
+  version: 1.0.0
+servers:
+  - url: https://{{hass_url}}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
+tags:
+  - name: 서버 상태 조회
+    description: |-
+      ``` bash
+      curl --location --request GET 'https://iot.tabspace.kr/api/' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Bearer REPLACE_THIS_TOKEN' \
+      https://iot.tabspace.kr/api/
+      }'
+
+       ```
+
+      서버 상태 조회는 data body를 위와 같이 null 값으로 전송하면 리턴됨.
+
+      리턴결과
+
+      ```
+      {
+          "message": "API running."
+      }
+
+       ```
+  - name: 기기 상태 조회
+    description: |-
+      기기 상태값을 조회
+
+      기기 목록 (오디에스 103호)
+
+      | 순번 | 기기이름 | 디바이스ID |
+      | --- | --- | --- |
+      | 1 | 오디에스 103호 출입모드 | input_select.orc03_msrmode |
+      | 2 | 오디에스 103호 전등 | switch.tasmota_8 |
+      | 3 | 오디에스 103호 온도 | sensor.ods103_am2301_temperature |
+      | 4 | 오디에스 103호 습도 | sensor.ods103_am2301_humidity |
+      | 5 | 오디에스 103호 에어컨 | climate.ods103_ir |
+      | 6 | 오디에스 103호 에어컨 동작상태 | binary_sensor.ods103_ds_2 |
+
+      기기 목록 (오디에스 105호)
+
+      | 순번 | 기기이름 | 디바이스ID |
+      | --- | --- | --- |
+      | 1 | 오디에스 105호 출입모드 | input_select.orc04_msrmode |
+      | 2 | 오디에스 105호 전등 | switch.tasmota_2 |
+      | 3 | 오디에스 105호 온도 | sensor.ods105_th_am2301_temperature |
+      | 4 | 오디에스 105호 습도 | sensor.ods103_am2301_humidity |
+      | 5 | 오디에스 105호 에어컨 | climate.ods105_ir |
+      | 6 | 오디에스 105호 에어컨 동작상태 | binary_sensor.ods105_ds |
+
+      기기 목록 (인디053)
+
+      | 순번 | 기기이름 | 디바이스ID |
+      | --- | --- | --- |
+      | 1 | 인디053 출입모드 (1호) | input_select.orc05_msrmode |
+      | 2 | 인디053 출입모드 (2호) | input_select.orc06_msrmode |
+      | 3 | 인디053 출입모드 (3호) | input_select.orc07_msrmode |
+      | 4 | 인디053 전등 - 녹음실 | switch.tasmota_17 |
+      | 5 | 인디053 전등 - 녹음실(안쪽1) | switch.tasmota_11 |
+      | 6 | 인디053 전등 - 녹음실(안쪽2) | switch.tasmota_10 |
+      | 7 | 인디053 전등 - 홀 | switch.tasmota_15 |
+      | 8 | 인디053 전등 - 홀 에어컨 | switch.tasmota_13 |
+      | 9 | 인디053 오른쪽 온도 | sensor.indy053_th1_am2301_temperature |
+      | 10 | 인디053 오른쪽 습도 | sensor.indy053_th1_am2301_humidity |
+      | 11 | 인디053 오른쪽 에어컨 | climate.indy053_ir1 |
+      | 12 | 인디053 오른쪽 에어컨 동작상태 | binary_sensor.indy053_ds1 |
+      | 13 | 인디053 왼쪽 온도 | sensor.indy053_th2_am2301_temperature |
+      | 14 | 인디053 왼쪽 습도 | sensor.indy053_th2_am2301_humidity |
+      | 15 | 인디053 왼쪽 에어컨 | climate.indy053_ir3 |
+      | 16 | 인디053 왼쪽 에어컨 동작상태 | binary_sensor.indy053_ds3 |
+      | 17 | 인디053 녹음실 에어컨 | climate.indy053_ir2 |
+      | 18 | 인디053 녹음실 에어컨 동작상태 | binary_sensor.indy053_ds2 |
+
+      기기 목록 (메시지팩토리)
+
+      | 순번 | 기기이름 | 디바이스ID |
+      | --- | --- | --- |
+      | 1 | 메시지팩토리 1층 공방 출입모드 | input_select.sharedg01_msrmode |
+      | 2 | 메시지팩토리 1층 현관 출입모드 | input_select.sharedg04_msrmode |
+      | 3 | 메시지팩토리 2층 공유공간 출입모드 | input_select.sharedg02_msrmode |
+
+      기기 목록 (사회적협의체)
+
+      | 순번 | 기기이름 | 디바이스ID |
+      | --- | --- | --- |
+      | 1 | 사회적협의체 정문 출입모드 | input_select.sharedg03_msrmode |
+      | 2 | 사회적협의체 전등 - 복도 | switch.sharedg04_sb1 |
+      | 3 | 사회적협의체 후문 동작센서 | binary_sensor.sharedg07_ms |
+      | 4 | 사회적협의체 정문 동작센서 | binary_sensor.sharedg08_ms |
+      | 5 | 사회적협의체 도어센서 | binary_sensor.sharedg02_ds |
+      | 6 | 사회적협의체 2호실 온도 | sensor.sharedg_th_room2_am2301_temperature |
+      | 7 | 사회적협의체 2호실 습도 | sensor.sharedg_th_room2_am2301_humidity |
+      | 8 | 사회적협의체 전등 - 2호실 | switch.sharedg02_sb |
+      | 9 | 사회적협의체 2호실 동작센서 | binary_sensor.sharedg04_ms |
+      | 10 | 사회적협의체 2호실 에어컨 | climate.sharedg03_ir |
+      | 11 | 사회적협의체 3호실 온도 | sensor.sharedg_th_room3_am2301_temperature |
+      | 12 | 사회적협의체 3호실 습도 | sensor.sharedg_th_room3_am2301_humidity |
+      | 13 | 사회적협의체 전등 - 3호실 | switch.sharedg04_sb |
+      | 14 | 사회적협의체 3호실 동작센서 | binary_sensor.sharedg05_ms |
+      | 15 | 사회적협의체 3호실 에어컨 | climate.sharedg04_ir |
+      | 16 | 사회적협의체 4호실 온도 | sensor.sharedg_th_room4_am2301_temperature |
+      | 17 | 사회적협의체 4호실 습도 | sensor.sharedg_th_room4_am2301_humidity |
+      | 18 | 사회적협의체 전등 - 4호실 | switch.sharedg05_sb |
+      | 19 | 사회적협의체 4호실 동작센서 | binary_sensor.sharedg06_ms |
+      | 20 | 사회적협의체 4호실 에어컨 | climate.sharedg05_ir |
+
+      ```
+      ※  출입모드의 경우 unlock(상시개방), lockdown(잠금)으로 반환됨
+
+       ```
+  - name: 기기 상태 조회 > [TEST] 테스트용
+    description: |-
+      **출입모드**
+
+      "state": "lockdown" 반환값으로 현상태 확인  
+      state는 unlock(상시개방)과 lockdown(잠금) 2가지 상태로 반환됨
+
+      전등
+
+      "state": "off" 반환값으로 현상태 확인
+
+      state는 on(켜짐)과 off(꺼짐) 2가지 상태로 반환됨
+  - name: 기기 상태 조회 > ODS103호
+  - name: 기기 상태 조회 > ODS105호
+  - name: 기기 상태 조회 > 인디053
+  - name: 기기 상태 조회 > 메시지팩토리
+  - name: 기기 상태 조회 > 사회적협의체
+  - name: 기기 제어
+    description: >-
+      1. 전등/전원 제어
+          
+      2. 에어컨 제어
+          
+      3. 출입기(출입문) 제어
+          
+
+      로 나누어져있으며, API호출방법은 각각의 폴더를 참고바람.
+
+
+      _**\* 주의 \* 사전에 TEST 장비로 제공된 목록에서 충분히 검증 후에 실서버 반영 필요.**_
+
+
+      <img
+      src="https://content.pstmn.io/73a0208f-5a2d-41ff-941b-79618325ca58/aW1hZ2UucG5n"
+      width="548" height="784">
+  - name: 기기 제어 > [TEST] 전등/전원 제어
+    description: >-
+      [https://iot.tabspace.kr/api/services/switch/turn_off](https://iot.tabspace.kr/api/services/switch/turn_off)
+      형태로 구성됨.
+
+
+      switch 도메인에는 3개의 커맨드인 **turn_off, turn_on, toggle**로 되어 있음.
+
+
+      switch 도메인은 전등, 전원 제어가 포괄적으로 포함됨.
+
+
+      Body에 제어하고자하는 **entity_id** 를 아래와 같이 domain과 함께 기입하여 호출하면 제어됨
+
+
+      ``` json
+
+      {
+          "entity_id": "switch.test_daegu_sw"
+      }
+
+       ```
+
+      api를 성공적으로 호출하면 200 response 수신됨
+
+
+      "state" 값이 off면 꺼짐, on이면 켜짐 상태임.
+
+
+      ``` json
+
+      [
+          {
+              "entity_id": "switch.test_daegu_sw",
+              "state": "off",
+              "attributes": {
+                  "friendly_name": "TEST_DAEGU_SW"
+              },
+              "last_changed": "2024-10-28T17:55:57.404204+00:00",
+              "last_updated": "2024-10-28T17:55:57.404204+00:00",
+              "context": {
+                  "id": "01JBA4ACAK9HM64J5QMFSHWXTA",
+                  "parent_id": null,
+                  "user_id": "e06cb3189f6146cbb7d7481d4178456e"
+              }
+          }
+      ]
+
+       ```
+
+      <img
+      src="https://content.pstmn.io/fdb7edd9-9829-42f7-97c6-389350c910f7/aW1hZ2UucG5n"
+      width="1566" height="710">
+  - name: 기기 제어 > [TEST] 에어컨 제어
+    description: |-
+      에어컨 켜는 시나리오
+
+      1. 온도설정 or 모드설정 or 온도+모드설정을 먼저 수행
+          
+      2. 에어컨 켜기 수행
+          
+
+      에어컨 끄는 시나리오
+
+      1. 에어컨 끄기 수행
+          
+
+      참고사항
+
+      - 에어컨 온도or모드or온도+모드 설정을 하지 않은 상태에서 에어컨 켜기를 수행하면, 마지막 상태값으로 켜짐
+  - name: 기기 제어 > [TEST] 출입기
+    description: |-
+      Body값 중, entity_id와 option을 지정하여 rest api 호출함.
+
+      option은 unlock(상시개방)과 lockdown(잠금) 2가지 상태가 있음.
+
+      ** lock은 공유대구에서는 사용하지 않는 기능임. 반드시 lockdown으로 호출바람.
+  - name: 기기 제어 > ODS103호
+  - name: 기기 제어 > ODS103호 > 전등/전원 제어
+    description: >-
+      [https://iot.tabspace.kr/api/services/switch/turn_off](https://iot.tabspace.kr/api/services/switch/turn_off)
+      형태로 구성됨.
+
+
+      switch 도메인에는 3개의 커맨드인 **turn_off, turn_on, toggle**로 되어 있음.
+
+
+      switch 도메인은 전등, 전원 제어가 포괄적으로 포함됨.
+
+
+      Body에 제어하고자하는 **entity_id** 를 아래와 같이 domain과 함께 기입하여 호출하면 제어됨
+
+
+      ``` json
+
+      {
+          "entity_id": "switch.test_daegu_sw"
+      }
+
+       ```
+
+      api를 성공적으로 호출하면 200 response 수신됨
+
+
+      "state" 값이 off면 꺼짐, on이면 켜짐 상태임.
+
+
+      ``` json
+
+      [
+          {
+              "entity_id": "switch.test_daegu_sw",
+              "state": "off",
+              "attributes": {
+                  "friendly_name": "TEST_DAEGU_SW"
+              },
+              "last_changed": "2024-10-28T17:55:57.404204+00:00",
+              "last_updated": "2024-10-28T17:55:57.404204+00:00",
+              "context": {
+                  "id": "01JBA4ACAK9HM64J5QMFSHWXTA",
+                  "parent_id": null,
+                  "user_id": "e06cb3189f6146cbb7d7481d4178456e"
+              }
+          }
+      ]
+
+       ```
+
+      <img
+      src="https://content.pstmn.io/fdb7edd9-9829-42f7-97c6-389350c910f7/aW1hZ2UucG5n"
+      width="1566" height="710">
+  - name: 기기 제어 > ODS103호 > 에어컨 제어
+    description: |-
+      에어컨 켜는 시나리오
+
+      1. 온도설정 or 모드설정 or 온도+모드설정을 먼저 수행
+          
+      2. 에어컨 켜기 수행
+          
+
+      에어컨 끄는 시나리오
+
+      1. 에어컨 끄기 수행
+          
+
+      참고사항
+
+      - 에어컨 온도or모드or온도+모드 설정을 하지 않은 상태에서 에어컨 켜기를 수행하면, 마지막 상태값으로 켜짐
+  - name: 기기 제어 > ODS103호 > 출입기 제어
+    description: |-
+      Body값 중, entity_id와 option을 지정하여 rest api 호출함.
+
+      option은 unlock(상시개방)과 lockdown(잠금) 2가지 상태가 있음.
+
+      ** lock은 공유대구에서는 사용하지 않는 기능임. 반드시 lockdown으로 호출바람.
+  - name: 기기 제어 > ODS105호
+  - name: 기기 제어 > ODS105호 > 전등/전원 제어
+    description: >-
+      [https://iot.tabspace.kr/api/services/switch/turn_off](https://iot.tabspace.kr/api/services/switch/turn_off)
+      형태로 구성됨.
+
+
+      switch 도메인에는 3개의 커맨드인 **turn_off, turn_on, toggle**로 되어 있음.
+
+
+      switch 도메인은 전등, 전원 제어가 포괄적으로 포함됨.
+
+
+      Body에 제어하고자하는 **entity_id** 를 아래와 같이 domain과 함께 기입하여 호출하면 제어됨
+
+
+      ``` json
+
+      {
+          "entity_id": "switch.test_daegu_sw"
+      }
+
+       ```
+
+      api를 성공적으로 호출하면 200 response 수신됨
+
+
+      "state" 값이 off면 꺼짐, on이면 켜짐 상태임.
+
+
+      ``` json
+
+      [
+          {
+              "entity_id": "switch.test_daegu_sw",
+              "state": "off",
+              "attributes": {
+                  "friendly_name": "TEST_DAEGU_SW"
+              },
+              "last_changed": "2024-10-28T17:55:57.404204+00:00",
+              "last_updated": "2024-10-28T17:55:57.404204+00:00",
+              "context": {
+                  "id": "01JBA4ACAK9HM64J5QMFSHWXTA",
+                  "parent_id": null,
+                  "user_id": "e06cb3189f6146cbb7d7481d4178456e"
+              }
+          }
+      ]
+
+       ```
+
+      <img
+      src="https://content.pstmn.io/fdb7edd9-9829-42f7-97c6-389350c910f7/aW1hZ2UucG5n"
+      width="1566" height="710">
+  - name: 기기 제어 > ODS105호 > 에어컨 제어
+    description: |-
+      에어컨 켜는 시나리오
+
+      1. 온도설정 or 모드설정 or 온도+모드설정을 먼저 수행
+          
+      2. 에어컨 켜기 수행
+          
+
+      에어컨 끄는 시나리오
+
+      1. 에어컨 끄기 수행
+          
+
+      참고사항
+
+      - 에어컨 온도or모드or온도+모드 설정을 하지 않은 상태에서 에어컨 켜기를 수행하면, 마지막 상태값으로 켜짐
+  - name: 기기 제어 > ODS105호 > 출입기 제어
+    description: |-
+      Body값 중, entity_id와 option을 지정하여 rest api 호출함.
+
+      option은 unlock(상시개방)과 lockdown(잠금) 2가지 상태가 있음.
+
+      ** lock은 공유대구에서는 사용하지 않는 기능임. 반드시 lockdown으로 호출바람.
+  - name: 기기 제어 > 인디053
+  - name: 기기 제어 > 인디053 > 전등/전원 제어
+    description: >-
+      [https://iot.tabspace.kr/api/services/switch/turn_off](https://iot.tabspace.kr/api/services/switch/turn_off)
+      형태로 구성됨.
+
+
+      switch 도메인에는 3개의 커맨드인 **turn_off, turn_on, toggle**로 되어 있음.
+
+
+      switch 도메인은 전등, 전원 제어가 포괄적으로 포함됨.
+
+
+      Body에 제어하고자하는 **entity_id** 를 아래와 같이 domain과 함께 기입하여 호출하면 제어됨
+
+
+      ``` json
+
+      {
+          "entity_id": "switch.test_daegu_sw"
+      }
+
+       ```
+
+      api를 성공적으로 호출하면 200 response 수신됨
+
+
+      "state" 값이 off면 꺼짐, on이면 켜짐 상태임.
+
+
+      ``` json
+
+      [
+          {
+              "entity_id": "switch.test_daegu_sw",
+              "state": "off",
+              "attributes": {
+                  "friendly_name": "TEST_DAEGU_SW"
+              },
+              "last_changed": "2024-10-28T17:55:57.404204+00:00",
+              "last_updated": "2024-10-28T17:55:57.404204+00:00",
+              "context": {
+                  "id": "01JBA4ACAK9HM64J5QMFSHWXTA",
+                  "parent_id": null,
+                  "user_id": "e06cb3189f6146cbb7d7481d4178456e"
+              }
+          }
+      ]
+
+       ```
+
+      <img
+      src="https://content.pstmn.io/fdb7edd9-9829-42f7-97c6-389350c910f7/aW1hZ2UucG5n"
+      width="1566" height="710">
+  - name: 기기 제어 > 인디053 > 에어컨 제어
+    description: |-
+      에어컨 켜는 시나리오
+
+      1. 온도설정 or 모드설정 or 온도+모드설정을 먼저 수행
+          
+      2. 에어컨 켜기 수행
+          
+
+      에어컨 끄는 시나리오
+
+      1. 에어컨 끄기 수행
+          
+
+      참고사항
+
+      - 에어컨 온도or모드or온도+모드 설정을 하지 않은 상태에서 에어컨 켜기를 수행하면, 마지막 상태값으로 켜짐
+  - name: 기기 제어 > 인디053 > 출입기 제어
+    description: |-
+      Body값 중, entity_id와 option을 지정하여 rest api 호출함.
+
+      option은 unlock(상시개방)과 lockdown(잠금) 2가지 상태가 있음.
+
+      ** lock은 공유대구에서는 사용하지 않는 기능임. 반드시 lockdown으로 호출바람.
+  - name: 기기 제어 > 메시지팩토리
+  - name: 기기 제어 > 메시지팩토리 > 전등/전원 제어
+    description: >-
+      [https://iot.tabspace.kr/api/services/switch/turn_off](https://iot.tabspace.kr/api/services/switch/turn_off)
+      형태로 구성됨.
+
+
+      switch 도메인에는 3개의 커맨드인 **turn_off, turn_on, toggle**로 되어 있음.
+
+
+      switch 도메인은 전등, 전원 제어가 포괄적으로 포함됨.
+
+
+      Body에 제어하고자하는 **entity_id** 를 아래와 같이 domain과 함께 기입하여 호출하면 제어됨
+
+
+      ``` json
+
+      {
+          "entity_id": "switch.test_daegu_sw"
+      }
+
+       ```
+
+      api를 성공적으로 호출하면 200 response 수신됨
+
+
+      "state" 값이 off면 꺼짐, on이면 켜짐 상태임.
+
+
+      ``` json
+
+      [
+          {
+              "entity_id": "switch.test_daegu_sw",
+              "state": "off",
+              "attributes": {
+                  "friendly_name": "TEST_DAEGU_SW"
+              },
+              "last_changed": "2024-10-28T17:55:57.404204+00:00",
+              "last_updated": "2024-10-28T17:55:57.404204+00:00",
+              "context": {
+                  "id": "01JBA4ACAK9HM64J5QMFSHWXTA",
+                  "parent_id": null,
+                  "user_id": "e06cb3189f6146cbb7d7481d4178456e"
+              }
+          }
+      ]
+
+       ```
+
+      <img
+      src="https://content.pstmn.io/fdb7edd9-9829-42f7-97c6-389350c910f7/aW1hZ2UucG5n"
+      width="1566" height="710">
+  - name: 기기 제어 > 메시지팩토리 > 출입기 제어
+    description: |-
+      Body값 중, entity_id와 option을 지정하여 rest api 호출함.
+
+      option은 unlock(상시개방)과 lockdown(잠금) 2가지 상태가 있음.
+
+      ** lock은 공유대구에서는 사용하지 않는 기능임. 반드시 lockdown으로 호출바람.
+  - name: 기기 제어 > 메시지팩토리 > 에어컨 제어
+    description: |-
+      에어컨 켜는 시나리오
+
+      1. 온도설정 or 모드설정 or 온도+모드설정을 먼저 수행
+          
+      2. 에어컨 켜기 수행
+          
+
+      에어컨 끄는 시나리오
+
+      1. 에어컨 끄기 수행
+          
+
+      참고사항
+
+      - 에어컨 온도or모드or온도+모드 설정을 하지 않은 상태에서 에어컨 켜기를 수행하면, 마지막 상태값으로 켜짐
+  - name: 기기 제어 > 사회적협의체
+  - name: 기기 제어 > 사회적협의체 > 전등/전원 제어
+    description: >-
+      [https://iot.tabspace.kr/api/services/switch/turn_off](https://iot.tabspace.kr/api/services/switch/turn_off)
+      형태로 구성됨.
+
+
+      switch 도메인에는 3개의 커맨드인 **turn_off, turn_on, toggle**로 되어 있음.
+
+
+      switch 도메인은 전등, 전원 제어가 포괄적으로 포함됨.
+
+
+      Body에 제어하고자하는 **entity_id** 를 아래와 같이 domain과 함께 기입하여 호출하면 제어됨
+
+
+      ``` json
+
+      {
+          "entity_id": "switch.test_daegu_sw"
+      }
+
+       ```
+
+      api를 성공적으로 호출하면 200 response 수신됨
+
+
+      "state" 값이 off면 꺼짐, on이면 켜짐 상태임.
+
+
+      ``` json
+
+      [
+          {
+              "entity_id": "switch.test_daegu_sw",
+              "state": "off",
+              "attributes": {
+                  "friendly_name": "TEST_DAEGU_SW"
+              },
+              "last_changed": "2024-10-28T17:55:57.404204+00:00",
+              "last_updated": "2024-10-28T17:55:57.404204+00:00",
+              "context": {
+                  "id": "01JBA4ACAK9HM64J5QMFSHWXTA",
+                  "parent_id": null,
+                  "user_id": "e06cb3189f6146cbb7d7481d4178456e"
+              }
+          }
+      ]
+
+       ```
+
+      <img
+      src="https://content.pstmn.io/fdb7edd9-9829-42f7-97c6-389350c910f7/aW1hZ2UucG5n"
+      width="1566" height="710">
+  - name: 기기 제어 > 사회적협의체 > 에어컨 제어
+    description: |-
+      에어컨 켜는 시나리오
+
+      1. 온도설정 or 모드설정 or 온도+모드설정을 먼저 수행
+          
+      2. 에어컨 켜기 수행
+          
+
+      에어컨 끄는 시나리오
+
+      1. 에어컨 끄기 수행
+          
+
+      참고사항
+
+      - 에어컨 온도or모드or온도+모드 설정을 하지 않은 상태에서 에어컨 켜기를 수행하면, 마지막 상태값으로 켜짐
+  - name: 기기 제어 > 사회적협의체 > 출입기 제어
+    description: |-
+      Body값 중, entity_id와 option을 지정하여 rest api 호출함.
+
+      option은 unlock(상시개방)과 lockdown(잠금) 2가지 상태가 있음.
+
+      ** lock은 공유대구에서는 사용하지 않는 기능임. 반드시 lockdown으로 호출바람.
+paths:
+  /api/:
+    get:
+      tags:
+        - 서버 상태 조회
+      summary: API 서버 상태 조회
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.test_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > [TEST] 테스트용
+      summary: '[TEST] 출입모드'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.test_daegu_sw:
+    get:
+      tags:
+        - 기기 상태 조회 > [TEST] 테스트용
+      summary: '[TEST] 전등'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.ods103_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS103호
+      summary: ODS103호_온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.ods103_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS103호
+      summary: ODS103호_습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.climate.ods103_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > [TEST] 테스트용
+      summary: ODS103호_에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.ods103_ds_2:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS103호
+      summary: ODS103호_에어컨동작상태
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.orc03_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 정문 출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.tasmota_8:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS103호
+      summary: ODS103호_전등
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.ods103_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS103호
+      summary: ODS103호_에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.orc04_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS105호
+      summary: ODS105호_출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.tasmota_2:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS105호
+      summary: ODS103호_전등
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.ods105_th_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS105호
+      summary: ODS105호_온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.ods105_th_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS105호
+      summary: ODS105호_습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.ods105_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS105호
+      summary: ODS103호_에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.ods105_ds:
+    get:
+      tags:
+        - 기기 상태 조회 > ODS105호
+      summary: ODS103호_에어컨동작상태
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.orc05_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_1호_출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.orc06_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053 2호 출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.orc07_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_3호_출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.tasmota_17:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_녹음실_전등
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.tasmota_11:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_녹음실(안쪽)_전등
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.tasmota_10:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_녹음실(안쪽2)_전등
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.tasmota_15:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_홀_전등
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.tasmota_13:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_홀(에어컨)_전등
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.indy053_th1_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_오른쪽_온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.indy053_th1_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_오른쪽_습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.indy053_ir1:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_오른쪽_에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.indy053_ds1:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_오른쪽_에어컨동작상태
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.indy053_th2_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_왼쪽_온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.indy053_th2_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_왼쪽_습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.indy053_ir3:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_왼쪽_에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.indy053_ds3:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_왼쪽_에어컨동작상태
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.indy053_ir2:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_녹음실_에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.indy053_ds2:
+    get:
+      tags:
+        - 기기 상태 조회 > 인디053
+      summary: 인디053_녹음실_에어컨동작상태
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.sharedg01_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 1층 공방 출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.sharedg04_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 1층 현관 출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/input_select.sharedg02_msrmode:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 2층 공유공간 출입모드
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.sharedg01_sb:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 도로창가 조명
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.sharedg01_sb1:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 홀 조명
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg01_th_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 단상 옆 온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg01_th_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 단상 옆 습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg02_th_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 창가 쪽 온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg02_th_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 창가 쪽 습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg00_th_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 중간 온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg00_th_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 중간 습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.sharedg01_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 단상 옆 에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.sharedg02_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > 메시지팩토리
+      summary: 메시지팩토리 창가 쪽 에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.sharedg04_sb1:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 전등 - 복도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.sharedg07_ms:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 후문 동작센서
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.sharedg08_ms:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 정문 동작센서
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.sharedg02_ds:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 도어센서
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg_th_room2_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 2호실 온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg_th_room2_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 2호실 습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.sharedg02_sb:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 전등 - 2호실
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.sharedg04_ms:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 2호실 동작센서
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.sharedg03_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 2호실 에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg_th_room3_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 3호실 온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg_th_room3_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 3호실 습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.sharedg04_sb:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 전등 - 3호실
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.sharedg05_ms:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 3호실 동작센서
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.sharedg04_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 3호실 에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg_th_room4_am2301_temperature:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 4호실 온도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/sensor.sharedg_th_room4_am2301_humidity:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 4호실 습도
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/switch.sharedg05_sb:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 전등 - 4호실
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/binary_sensor.sharedg06_ms:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 4호실 동작센서
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/states/climate.sharedg05_ir:
+    get:
+      tags:
+        - 기기 상태 조회 > 사회적협의체
+      summary: 사회적협의체 4호실 에어컨
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/switch/turn_off:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 전등/전원 제어
+      summary: 사회적협의체 전등 - 4호실 끄기(OFF)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: switch.sharedg05_sb
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/switch/turn_on:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 전등/전원 제어
+      summary: 사회적협의체 전등 - 4호실 켜기(ON)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: switch.sharedg05_sb
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/switch/toggle:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 전등/전원 제어
+      summary: 사회적협의체 전등 - 4호실 반전(TOGGLE)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: switch.sharedg05_sb
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/climate/turn_on:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 에어컨 제어
+      summary: 사회적협의체 4호실 에어컨 켜기
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: climate.sharedg05_ir
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/climate/turn_off:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 에어컨 제어
+      summary: 사회적협의체 4호실 에어컨 끄기
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: climate.sharedg05_ir
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/climate/set_temperature:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 에어컨 제어
+      summary: 사회적협의체 4호실 에어컨 모드+온도설정
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: climate.sharedg05_ir
+                hvac_mode: heat
+                temperature: '25'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/climate/set_hvac_mode:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 에어컨 제어
+      summary: 사회적협의체 4호실 에어컨 모드설정
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: climate.sharedg05_ir
+                hvac_mode: cool
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/services/input_select/select_option:
+    post:
+      tags:
+        - 기기 제어 > 사회적협의체 > 출입기 제어
+      summary: 사회적협의체 정문 출입모드 잠금
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                entity_id: input_select.sharedg03_msrmode
+                option: lockdown
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
