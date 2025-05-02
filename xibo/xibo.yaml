@@ -13,7 +13,7 @@
         },
         "version": "4.0"
     },
-    "basePath": "/api",
+    "basePath": "http://tabspacesdm.iptime.org:65501/api",
     "schemes": [
         "http"
     ],
