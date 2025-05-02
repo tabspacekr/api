@@ -15568,8 +15568,8 @@
         "auth": {
             "type": "oauth2",
             "flow": "accessCode",
-            "authorizationUrl": "/api/authorize",
-            "tokenUrl": "/api/authorize/access_token",
+            "authorizationUrl": "tabspacesdm.iptime.org:65501/api/authorize",
+            "tokenUrl": "tabspacesdm.iptime.org:65501/api/authorize/access_token",
             "scopes": {
                 "read:all": "read access",
                 "write:all": "write access"
